@@ -25,7 +25,7 @@ fn brand_url(brand: &Brand) -> String {
     env::var(brand.env).expect("URL is not set (check .env)")
 }
 
-fn filter_response(arr: &Vec<Value>) -> Vec<Value> {
+fn filter_response(arr: &[Value]) -> Vec<Value> {
     arr.iter()
         .filter(|item| {
             item.get("affectedPageType")
@@ -52,7 +52,7 @@ fn filter_response(arr: &Vec<Value>) -> Vec<Value> {
 }
 
 fn fetch(brand: &Brand) -> Result<Vec<Value>> {
-    let url = brand_url(&brand);
+    let url = brand_url(brand);
 
     let text = reqwest::blocking::get(&url)
         .with_context(|| format!("GET {url} failed"))?
@@ -64,7 +64,7 @@ fn fetch(brand: &Brand) -> Result<Vec<Value>> {
         .as_array()
         .with_context(|| "top-level JSON is not an array")?;
 
-    let filtered = filter_response(&arr);
+    let filtered = filter_response(arr);
     Ok(filtered)
 }
 
